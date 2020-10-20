@@ -7214,3 +7214,33 @@ java.lang.NullPointerException
 
 !ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:26:16.005
 !MESSAGE executing callback sts4.classpath.yvTHODaQ SUCCESS [done]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:39.114
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:39.115
+!MESSAGE classpath=21 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:39.116
+!MESSAGE buffering callback sts4.classpath.yvTHODaQ configServer false 21
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:39.117
+!MESSAGE executing callback sts4.classpath.yvTHODaQ 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:39.123
+!MESSAGE executing callback sts4.classpath.yvTHODaQ SUCCESS [done]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:47.331
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:47.340
+!MESSAGE classpath=109 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:47.349
+!MESSAGE buffering callback sts4.classpath.yvTHODaQ configServer false 109
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:47.349
+!MESSAGE executing callback sts4.classpath.yvTHODaQ 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2020-10-21 00:27:47.355
+!MESSAGE executing callback sts4.classpath.yvTHODaQ SUCCESS [done]
