@@ -1,13 +1,13 @@
-package tn.enis.member;
+package tn.enis.publication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MemberApplication {
+public class PublicationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MemberApplication.class, args);
+		SpringApplication.run(PublicationApplication.class, args);
 	}
 
 }

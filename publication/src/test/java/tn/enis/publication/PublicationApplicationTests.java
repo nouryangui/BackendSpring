@@ -1,10 +1,10 @@
-package tn.enis.membre;
+package tn.enis.publication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MembreApplicationTests {
+class PublicationApplicationTests {
 
 	@Test
 	void contextLoads() {
