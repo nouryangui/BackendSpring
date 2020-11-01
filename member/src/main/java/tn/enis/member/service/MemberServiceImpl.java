@@ -6,24 +6,34 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import tn.enis.member.bean.PublicationBean;
 import tn.enis.member.common.Constants;
 import tn.enis.member.common.Constants.EntitiesNames;
 import tn.enis.member.common.ServerException;
+import tn.enis.member.dao.MemberPublicationRepository;
 import tn.enis.member.dao.MemberRepository;
 import tn.enis.member.dao.TeacherRepository;
 import tn.enis.member.entities.Member;
+import tn.enis.member.entities.MemberPublication;
+import tn.enis.member.entities.PublicationMemberId;
 import tn.enis.member.entities.Teacher;
+import tn.enis.member.proxy.PublicationProxy;
 
 @Service
 @Slf4j
 public class MemberServiceImpl implements IMemberService {
 	private final MemberRepository memberRepository;
 	private final TeacherRepository teacherRepository;
+	private final MemberPublicationRepository memberPublicationRepository;
+	private final PublicationProxy publicationProxy;
 
-	public MemberServiceImpl(MemberRepository memberRepository, TeacherRepository teacherRepository) {
+	public MemberServiceImpl(MemberRepository memberRepository, TeacherRepository teacherRepository,
+			MemberPublicationRepository memberPublicationRepository, PublicationProxy publicationProxy) {
 		super();
 		this.memberRepository = memberRepository;
 		this.teacherRepository = teacherRepository;
+		this.memberPublicationRepository = memberPublicationRepository;
+		this.publicationProxy = publicationProxy;
 	}
 
 	@Override
@@ -94,6 +104,28 @@ public class MemberServiceImpl implements IMemberService {
 //			throw new ServerException(Constants.ErrorMessages.saving(EntitiesNames.MEMBERS));
 		}
 		return null;
+	}
+
+	@Override
+	public void affectMemberToPublication(Long idMember, Long idPulication) {
+		Member member = memberRepository.findById(idMember).get();
+		MemberPublication memberPublication = new MemberPublication();
+		memberPublication.setMember(member);
+		memberPublication.setId(new PublicationMemberId(idMember, idPulication));
+		memberPublicationRepository.save(memberPublication);
+
+	}
+
+	@Override
+	public List<PublicationBean> findPublicationByMember(Long idMember) {
+		List<PublicationBean> publications = new ArrayList<PublicationBean>();
+		List<MemberPublication> membersPublication = memberPublicationRepository.findMemberPublicationId(idMember);
+		membersPublication.forEach(s -> {
+			publications.add(publicationProxy.recupererUnePublication(s.getId().getPulicationId()));
+
+		});
+
+		return publications;
 	}
 
 }

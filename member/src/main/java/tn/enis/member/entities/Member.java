@@ -2,6 +2,7 @@ package tn.enis.member.entities;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -9,12 +10,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import tn.enis.member.bean.PublicationBean;
 
 @Entity
 @NoArgsConstructor
@@ -42,5 +45,6 @@ public abstract class Member {
 	String password;
 	Byte[] photo;
 	File cv;
-
+	@Transient
+	List<PublicationBean> publications;
 }
