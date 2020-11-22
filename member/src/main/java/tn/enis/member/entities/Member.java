@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import tn.enis.member.bean.PublicationBean;
+import tn.enis.member.bean.ToolBean;
 
 @Entity
 @NoArgsConstructor
@@ -43,8 +44,12 @@ public abstract class Member {
 	String email;
 	@NonNull
 	String password;
+	@NonNull
 	Byte[] photo;
+	@NonNull
 	File cv;
 	@Transient
 	List<PublicationBean> publications;
+	@Transient
+	List<ToolBean> tools;
 }

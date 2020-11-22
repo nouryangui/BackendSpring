@@ -1,5 +1,6 @@
 package tn.enis.publication.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,18 @@ public class PublicationController {
 		return publicationService.findAll();
 	}
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "{id}")
 	public Publication findPublicationById(@PathVariable Long id) {
 		return publicationService.getById(id);
+	}
+
+	@GetMapping(value = "/type/{type}")
+	public List<Publication> findPublicationByType(@PathVariable String type) {
+		return publicationService.getByType(type);
+	}
+	@GetMapping(value = "/date/{date}")
+	public List<Publication> findPublicationByDate(@PathVariable LocalDate date) {
+		return publicationService.getByDate(date);
 	}
 
 	@PostMapping()
@@ -43,7 +53,7 @@ public class PublicationController {
 	}
 
 	@PutMapping()
-	public Publication updatePublication( @RequestBody Publication publication) {
-		return  publicationService.update(publication);
+	public Publication updatePublication(@RequestBody Publication publication) {
+		return publicationService.update(publication);
 	}
 }

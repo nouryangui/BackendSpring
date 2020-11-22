@@ -1,5 +1,6 @@
 package tn.enis.publication.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,19 @@ public class PublicationServiceImpl implements IpublicationService {
 	@Override
 	public Publication getById(Long id) {
 		return publicationRepository.findById(id).get();
+	}
+
+	@Override
+	public List<Publication> getByType(String type) {
+
+		List<Publication> publications = publicationRepository.findByType(type);
+		return publications;
+	}
+
+	@Override
+	public List<Publication> getByDate(LocalDate date) {
+		List<Publication> publications = publicationRepository.findByDate(date);
+		return publications;
 	}
 
 	@Override

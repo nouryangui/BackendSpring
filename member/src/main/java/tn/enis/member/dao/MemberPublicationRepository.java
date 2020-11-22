@@ -9,5 +9,5 @@ import tn.enis.member.entities.PublicationMemberId;
 
 public interface MemberPublicationRepository extends JpaRepository<MemberPublication, PublicationMemberId> {
 	@Query("select m from MemberPublication  m where member_id=:x")
-	List<MemberPublication> findMemberPublicationId(@Param("x") Long autId);
+	List<MemberPublication> findMemberPublicationId(@Param("x") Long memberId);
 }

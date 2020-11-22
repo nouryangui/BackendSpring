@@ -13,7 +13,7 @@ public class MemberPublication {
 	@EmbeddedId
 	private PublicationMemberId id;
 	@ManyToOne
-	@MapsId ("memberId")
+	@MapsId("memberId")
 	private Member member;
 
 }

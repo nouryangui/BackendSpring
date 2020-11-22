@@ -7,17 +7,21 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import tn.enis.member.bean.PublicationBean;
-import tn.enis.member.common.Constants;
-import tn.enis.member.common.Constants.EntitiesNames;
-import tn.enis.member.common.ServerException;
+import tn.enis.member.bean.ToolBean;
 import tn.enis.member.dao.MemberPublicationRepository;
 import tn.enis.member.dao.MemberRepository;
+import tn.enis.member.dao.MemberToolRepository;
+import tn.enis.member.dao.StudentRepository;
 import tn.enis.member.dao.TeacherRepository;
 import tn.enis.member.entities.Member;
 import tn.enis.member.entities.MemberPublication;
+import tn.enis.member.entities.MemberTool;
 import tn.enis.member.entities.PublicationMemberId;
+import tn.enis.member.entities.Student;
 import tn.enis.member.entities.Teacher;
+import tn.enis.member.entities.ToolMemberId;
 import tn.enis.member.proxy.PublicationProxy;
+import tn.enis.member.proxy.ToolProxy;
 
 @Service
 @Slf4j
@@ -26,84 +30,95 @@ public class MemberServiceImpl implements IMemberService {
 	private final TeacherRepository teacherRepository;
 	private final MemberPublicationRepository memberPublicationRepository;
 	private final PublicationProxy publicationProxy;
+	private final StudentRepository studentRepository;
+	private final MemberToolRepository memberToolRepository;
+	private final ToolProxy toolProxy;
 
 	public MemberServiceImpl(MemberRepository memberRepository, TeacherRepository teacherRepository,
-			MemberPublicationRepository memberPublicationRepository, PublicationProxy publicationProxy) {
+			StudentRepository studentRepository, MemberPublicationRepository memberPublicationRepository,
+			PublicationProxy publicationProxy, MemberToolRepository memberToolRepository, ToolProxy toolProxy) {
 		super();
 		this.memberRepository = memberRepository;
 		this.teacherRepository = teacherRepository;
 		this.memberPublicationRepository = memberPublicationRepository;
 		this.publicationProxy = publicationProxy;
+		this.studentRepository = studentRepository;
+		this.memberToolRepository = memberToolRepository;
+		this.toolProxy = toolProxy;
 	}
 
 	@Override
-	public List<Member> findAll() throws ServerException {
+	public List<Member> findAll() {
 
-		try {
-			List<Member> members = new ArrayList<>(memberRepository.findAll());
-			if (!members.isEmpty()) {
-				log.info("members loaded successfully");
-			} else {
-				log.info("members have not been loaded");
-			}
-			return members;
+		List<Member> members = new ArrayList<>(memberRepository.findAll());
 
-		} catch (ServerException e) {
-
-			throw new ServerException(Constants.ErrorMessages.loading(EntitiesNames.MEMBERS));
-		}
+		return members;
 
 	}
 
 	@Override
 	public Member getById(Long id) {
-		try {
-			Member member = memberRepository.findById(id).get();
-			if (member == null) {
-				throw new ServerException(Constants.ErrorMessages.searching(Constants.EntitiesNames.MEMBERS));
-			}
-			log.info("findOneMember : user with id={} loaded successfully", id);
-			return member;
-		} catch (ServerException e) {
-			throw new ServerException(Constants.ErrorMessages.loading(EntitiesNames.MEMBERS));
 
-		}
+		Member member = memberRepository.findById(id).get();
+
+		return member;
+
+	}
+
+	@Override
+	public Member add(Member member) {
+
+		return memberRepository.save(member);
+
+	}
+
+	@Override
+	public void delete(Long id) {
+
+		memberRepository.deleteById(id);
+		log.info("deleteOneMember:Member with id = {} deleted successfully", id);
+
+	}
+
+	@Override
+	public Member update(Member member) {
+
+		return memberRepository.save(member);
+	}
+
+	public List<Teacher> findAllTeachers() {
+		return teacherRepository.findAll();
+	}
+
+	@Override
+	public List<Student> findAllStudents() {
+
+		return studentRepository.findAll();
+	}
+
+	public Student affectTeacher(Long idTeacher, Long idStudent) {
+
+		Student student = (Student) memberRepository.findById(idStudent).get();
+		Teacher teacher = (Teacher) memberRepository.findById(idTeacher).get();
+		student.setTeacher(teacher);
+		return memberRepository.save(student);
+
 	}
 
 	@Override
 	public List<Teacher> findByGrade(String grade) {
 
-		try {
-			List<Teacher> teacher = teacherRepository.findByGrade(grade);
-			if (teacher == null) {
-				throw new ServerException(Constants.ErrorMessages.searching(Constants.EntitiesNames.MEMBERS));
-			}
-			log.info("findTeachers : user with grade={} loaded successfully", grade);
-			return teacher;
+		List<Teacher> teacher = teacherRepository.findByGrade(grade);
 
-		} catch (ServerException e) {
-			throw new ServerException(Constants.ErrorMessages.searching(EntitiesNames.MEMBERS));
-		}
+		return teacher;
+
 	}
 
 	@Override
-	public Member add(Member member) {
-		try {
-			Member memberEntity = memberRepository.findByCin(member.getCin());
-			if (memberEntity != null) {
-				throw new ServerException("Cin already exist");
-			}
-			memberEntity = memberRepository.findByEmail(member.getEmail());
-			if (memberEntity != null) {
-				throw new ServerException("email already exist");
-			}
-			log.info("Member with id= {} saved successfully", member.getId());
-			return memberRepository.save(member);
-		} catch (ServerException e) {
-			log.error(e.getMessage());
-//			throw new ServerException(Constants.ErrorMessages.saving(EntitiesNames.MEMBERS));
-		}
-		return null;
+	public List<Teacher> findByEtablissement(String etablissement) {
+		List<Teacher> teacher = teacherRepository.findByEtablissement(etablissement);
+
+		return teacher;
 	}
 
 	@Override
@@ -126,6 +141,28 @@ public class MemberServiceImpl implements IMemberService {
 		});
 
 		return publications;
+	}
+
+	@Override
+	public void affectMemberToTool(Long idMember, Long idTool) {
+		Member member = memberRepository.findById(idMember).get();
+		MemberTool memberTool = new MemberTool();
+		memberTool.setMember(member);
+		memberTool.setToolMemberId(new ToolMemberId(idMember, idTool));
+		memberToolRepository.save(memberTool);
+
+	}
+
+	@Override
+	public List<ToolBean> findToolByMember(Long idMember) {
+		List<ToolBean> tools = new ArrayList<ToolBean>();
+		List<MemberTool> membersToolId = memberToolRepository.findMemberToolId(idMember);
+		membersToolId.forEach(s -> {
+			tools.add(toolProxy.findToolById(s.getToolMemberId().getToolId()));
+
+		});
+
+		return tools;
 	}
 
 }

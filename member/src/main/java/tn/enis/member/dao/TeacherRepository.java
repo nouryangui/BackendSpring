@@ -11,4 +11,7 @@ import tn.enis.member.entities.Teacher;
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	List<Teacher> findByGrade(String grade);
 
+	List<Teacher> findByEtablissement(String etablissement);
+
+
 }
