@@ -2,6 +2,7 @@ package tn.enis.member.service;
 
 import java.util.List;
 
+import tn.enis.member.bean.EventBean;
 import tn.enis.member.bean.PublicationBean;
 import tn.enis.member.bean.ToolBean;
 import tn.enis.member.entities.Member;
@@ -36,5 +37,9 @@ public interface IMemberService {
 	void affectMemberToTool(Long idMember, Long idTool);
 
 	List<ToolBean> findToolByMember(Long idMember);
+
+	void affectMemberToEvent(Long idMember, Long idEvent);
+
+	List<EventBean> findEventByMember(Long idMember);
 
 }

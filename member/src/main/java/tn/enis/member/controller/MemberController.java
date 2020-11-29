@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import tn.enis.member.bean.EventBean;
 import tn.enis.member.bean.ToolBean;
 import tn.enis.member.entities.Member;
 import tn.enis.member.entities.Student;
@@ -98,11 +99,13 @@ public class MemberController {
 	}
 
 	@GetMapping("/fullmember/{id}")
-	public Member findAFullMember(@PathVariable(name = "id") Long id) {
+	public Member findFullMember(@PathVariable(name = "id") Long id) {
 
 		Member member = memberService.getById(id);
 		member.setPublications(memberService.findPublicationByMember(id));
 		member.setTools(memberService.findToolByMember(id));
+		member.setEvents(memberService.findEventByMember(id));
+
 		return member;
 
 	}
@@ -116,10 +119,18 @@ public class MemberController {
 	public void affectMemberToTool(@PathVariable Long idMember, @PathVariable Long idTool) {
 		memberService.affectMemberToTool(idMember, idTool);
 	}
+	@PostMapping("/events/{idMember}/{idEvent}")
+	public void affectMemberToEvent(@PathVariable Long idMember, @PathVariable Long idEvent) {
+		memberService.affectMemberToEvent(idMember, idEvent);
+	}
 
 	@GetMapping("/tools/{idMember}")
 	public List<ToolBean> findToolByMember(@PathVariable Long idMember) {
 		return memberService.findToolByMember(idMember);
+	}
+	@GetMapping("/events/{idMember}")
+	public List<EventBean> findEventByMember(@PathVariable Long idMember) {
+		return memberService.findEventByMember(idMember);
 	}
 
 }

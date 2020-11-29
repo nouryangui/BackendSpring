@@ -17,6 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import tn.enis.member.bean.EventBean;
 import tn.enis.member.bean.PublicationBean;
 import tn.enis.member.bean.ToolBean;
 
@@ -52,4 +53,6 @@ public abstract class Member {
 	List<PublicationBean> publications;
 	@Transient
 	List<ToolBean> tools;
+	@Transient
+	List<EventBean> events;
 }

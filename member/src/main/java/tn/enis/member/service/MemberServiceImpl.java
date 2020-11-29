@@ -6,20 +6,25 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import tn.enis.member.bean.EventBean;
 import tn.enis.member.bean.PublicationBean;
 import tn.enis.member.bean.ToolBean;
+import tn.enis.member.dao.MemberEventRepository;
 import tn.enis.member.dao.MemberPublicationRepository;
 import tn.enis.member.dao.MemberRepository;
 import tn.enis.member.dao.MemberToolRepository;
 import tn.enis.member.dao.StudentRepository;
 import tn.enis.member.dao.TeacherRepository;
+import tn.enis.member.entities.EventMemberId;
 import tn.enis.member.entities.Member;
+import tn.enis.member.entities.MemberEvent;
 import tn.enis.member.entities.MemberPublication;
 import tn.enis.member.entities.MemberTool;
 import tn.enis.member.entities.PublicationMemberId;
 import tn.enis.member.entities.Student;
 import tn.enis.member.entities.Teacher;
 import tn.enis.member.entities.ToolMemberId;
+import tn.enis.member.proxy.EventProxy;
 import tn.enis.member.proxy.PublicationProxy;
 import tn.enis.member.proxy.ToolProxy;
 
@@ -32,11 +37,14 @@ public class MemberServiceImpl implements IMemberService {
 	private final PublicationProxy publicationProxy;
 	private final StudentRepository studentRepository;
 	private final MemberToolRepository memberToolRepository;
+	private final MemberEventRepository memberEventRepository;
 	private final ToolProxy toolProxy;
+	private final EventProxy eventProxy;
 
 	public MemberServiceImpl(MemberRepository memberRepository, TeacherRepository teacherRepository,
 			StudentRepository studentRepository, MemberPublicationRepository memberPublicationRepository,
-			PublicationProxy publicationProxy, MemberToolRepository memberToolRepository, ToolProxy toolProxy) {
+			PublicationProxy publicationProxy, MemberToolRepository memberToolRepository, ToolProxy toolProxy,
+			MemberEventRepository memberEventRepository, EventProxy eventProxy) {
 		super();
 		this.memberRepository = memberRepository;
 		this.teacherRepository = teacherRepository;
@@ -45,6 +53,8 @@ public class MemberServiceImpl implements IMemberService {
 		this.studentRepository = studentRepository;
 		this.memberToolRepository = memberToolRepository;
 		this.toolProxy = toolProxy;
+		this.memberEventRepository = memberEventRepository;
+		this.eventProxy = eventProxy;
 	}
 
 	@Override
@@ -165,4 +175,25 @@ public class MemberServiceImpl implements IMemberService {
 		return tools;
 	}
 
+	public void affectMemberToEvent(Long idMember, Long idEvent) {
+		Member member = memberRepository.findById(idMember).get();
+		MemberEvent memberEvent = new MemberEvent();
+		memberEvent.setMember(member);
+		memberEvent.setEventMemberId(new EventMemberId(idMember, idEvent));
+		memberEventRepository.save(memberEvent);
+
+	}
+
+	@Override
+	public List<EventBean> findEventByMember(Long idMember) {
+
+		List<EventBean> events = new ArrayList<EventBean>();
+		List<MemberEvent> membersEventId = memberEventRepository.findMemberEventId(idMember);
+		membersEventId.forEach(s -> {
+			events.add(eventProxy.findEventById(s.getEventMemberId().getEventId()));
+
+		});
+
+		return events;
+	}
 }
