@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import tn.enis.publication.entities.Publication;
@@ -51,6 +54,12 @@ public class PublicationServiceImpl implements IpublicationService {
 	@Override
 	public Publication update(Publication publication) {
 		return publicationRepository.save(publication);
+
+	}
+	public Page<Publication> getAll(Pageable pageable) {
+
+		Page<Publication> publicationPage= publicationRepository.findAll(pageable);
+		return new PageImpl<>(publicationPage.getContent(), pageable, publicationPage.getTotalElements());
 
 	}
 

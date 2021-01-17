@@ -2,6 +2,9 @@ package tn.enis.member.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import tn.enis.member.bean.EventBean;
 import tn.enis.member.bean.PublicationBean;
 import tn.enis.member.bean.ToolBean;
@@ -42,4 +45,7 @@ public interface IMemberService {
 
 	List<EventBean> findEventByMember(Long idMember);
 
+	Page<Member> getAll(Pageable pageable);
+
+	List<Member> findMemberByEvent(Long idEvent);
 }

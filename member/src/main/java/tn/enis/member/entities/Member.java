@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,15 +41,14 @@ public abstract class Member {
 	String firstName;
 	@NonNull
 	String lastName;
-	@NonNull
+    @JsonFormat(pattern="yyyy-MM-dd")
 	LocalDate birthDate;
 	@NonNull
 	String email;
 	@NonNull
 	String password;
-	@NonNull
 	Byte[] photo;
-	@NonNull
+	
 	File cv;
 	@Transient
 	List<PublicationBean> publications;

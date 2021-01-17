@@ -3,6 +3,9 @@ package tn.enis.publication.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import tn.enis.publication.entities.Publication;
 
 public interface IpublicationService {
@@ -19,5 +22,7 @@ public interface IpublicationService {
 	public void delete(Long id);
 
 	public Publication update(Publication publication);
+
+	Page<Publication> getAll(Pageable pageable);
 
 }

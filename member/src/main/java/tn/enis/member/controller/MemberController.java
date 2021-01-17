@@ -3,6 +3,9 @@ package tn.enis.member.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,11 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import tn.enis.member.bean.EventBean;
+import tn.enis.member.bean.PublicationBean;
 import tn.enis.member.bean.ToolBean;
+import tn.enis.member.dao.MemberRepository;
 import tn.enis.member.entities.Member;
 import tn.enis.member.entities.Student;
 import tn.enis.member.entities.Teacher;
@@ -23,9 +29,12 @@ import tn.enis.member.service.IMemberService;
 @RestController
 @RequestMapping("/api/members")
 @Slf4j
+
 public class MemberController {
 	@Autowired
 	IMemberService memberService;
+	@Autowired
+	MemberRepository memberRepository ;
 
 	@PostMapping(value = "/students")
 	public Member addStudent(@RequestBody Student student) {
@@ -42,9 +51,20 @@ public class MemberController {
 		return memberService.findAll();
 	}
 
+	@GetMapping(value = "/all")
+	public Page<Member> findAllMembersPaginator(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "2") int size) {
+		return memberService.getAll(PageRequest.of(page, size));
+	}
+
 	@GetMapping(value = "/teachers")
 	public List<Teacher> findAllTeachers() {
 		return memberService.findAllTeachers();
+	}
+
+	@GetMapping(value = "/count")
+	public Long findCountMembers() {
+		return memberRepository.count();
 	}
 
 	@GetMapping(value = "/students")
@@ -72,7 +92,7 @@ public class MemberController {
 	}
 
 	@DeleteMapping(value = "{id}")
-	public void DeleteMember(@RequestBody Long id) {
+	public void DeleteMember(@PathVariable Long id) {
 		memberService.delete(id);
 
 	}
@@ -103,7 +123,7 @@ public class MemberController {
 
 		Member member = memberService.getById(id);
 		member.setPublications(memberService.findPublicationByMember(id));
-		member.setTools(memberService.findToolByMember(id));
+	member.setTools(memberService.findToolByMember(id));
 		member.setEvents(memberService.findEventByMember(id));
 
 		return member;
@@ -119,6 +139,7 @@ public class MemberController {
 	public void affectMemberToTool(@PathVariable Long idMember, @PathVariable Long idTool) {
 		memberService.affectMemberToTool(idMember, idTool);
 	}
+
 	@PostMapping("/events/{idMember}/{idEvent}")
 	public void affectMemberToEvent(@PathVariable Long idMember, @PathVariable Long idEvent) {
 		memberService.affectMemberToEvent(idMember, idEvent);
@@ -128,9 +149,18 @@ public class MemberController {
 	public List<ToolBean> findToolByMember(@PathVariable Long idMember) {
 		return memberService.findToolByMember(idMember);
 	}
+
 	@GetMapping("/events/{idMember}")
 	public List<EventBean> findEventByMember(@PathVariable Long idMember) {
 		return memberService.findEventByMember(idMember);
+	}
+	@GetMapping("/publications/{idMember}")
+	public List<PublicationBean> findPublicationByMember(@PathVariable Long idMember) {
+		return memberService.findPublicationByMember(idMember);
+	}
+	@GetMapping("/event/{idEvent}")
+	public List<Member> findMemberByEvent(@PathVariable Long idEvent) {
+		return memberService.findMemberByEvent(idEvent);
 	}
 
 }

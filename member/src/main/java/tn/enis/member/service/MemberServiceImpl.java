@@ -3,6 +3,9 @@ package tn.enis.member.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -195,5 +198,23 @@ public class MemberServiceImpl implements IMemberService {
 		});
 
 		return events;
+	}
+	public List<Member> findMemberByEvent(Long idEvent) {
+
+		List<Member> members = new ArrayList<Member>();
+		List<MemberEvent> membersEventId = memberEventRepository.findEventMemberId(idEvent);
+		membersEventId.forEach(s -> {
+			members.add(memberRepository.findById(s.getEventMemberId().getMemberId()).get());
+
+		});
+
+		return members;
+	}
+
+	public Page<Member> getAll(Pageable pageable) {
+
+		Page<Member> memberPage = memberRepository.findAll(pageable);
+		return new PageImpl<>(memberPage.getContent(), pageable, memberPage.getTotalElements());
+
 	}
 }

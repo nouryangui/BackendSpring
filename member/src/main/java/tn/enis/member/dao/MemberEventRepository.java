@@ -12,5 +12,8 @@ import tn.enis.member.entities.MemberEvent;
 public interface MemberEventRepository extends JpaRepository<MemberEvent, EventMemberId> {
 	@Query("select m from MemberEvent  m where member_id=:x")
 	List<MemberEvent> findMemberEventId(@Param("x")Long idMember);
+	
+	@Query("select m from MemberEvent  m where event_id=:x")
+	List<MemberEvent> findEventMemberId(@Param("x")Long idEvent);
 
 }
